@@ -1,11 +1,14 @@
 import logging
+from aws_lambda_powertools.logging import Logger
+import time
 import boto3
 
 class CustomLogger:
     def __init__(self, log_group_name, log_stream_name):
         self.log_group_name = log_group_name
         self.log_stream_name = log_stream_name
-        self.logger = logging.getLogger(__name__)
+
+        self.logger = Logger(service="my-service")
         self.setup_logging()
 
     def setup_logging(self):
@@ -35,18 +38,7 @@ class CustomLogger:
             ]
         )
 
-def lambda_handler(event, context):
-    # Replace 'your-log-group' and 'your-stream-name' with actual values
+if __name__ == "__main__":
+    # Example usage of the custom logger
     custom_logger = CustomLogger(log_group_name='your-log-group', log_stream_name='your-stream-name')
-
-    try:
-        # Your Lambda function logic here
-        custom_logger.log_message('Lambda execution started')
-        # ...
-
-        custom_logger.log_message('Lambda execution completed successfully')
-        return {'statusCode': 200, 'body': 'Lambda executed successfully'}
-    except Exception as e:
-        # Log any exceptions
-        custom_logger.log_message(f'Lambda execution failed: {str(e)}')
-        return {'statusCode': 500, 'body': 'Lambda execution failed'}
+    custom_logger.log_message("This is a custom log message.")
